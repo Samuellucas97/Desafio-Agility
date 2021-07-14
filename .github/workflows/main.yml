@@ -64,7 +64,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: /terraform/create-update-infra
+        working-directory: terraform/create-update-infra
 
     steps:
       # Instalando e configurando o Terraform
