@@ -58,27 +58,35 @@ jobs:
           platforms: linux/amd64
           tags: samuel1797/desafio-agility:${{ steps.tagging.outputs.new_version }}
 
-  # create-infra:
-  #   needs: build-test
-  #   runs-on: ubuntu-latest
+  create-update-infra:
+    needs: build-test
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     # Instalanndo e configurando o Terraform
-  #     - name: Install and setting Terraform
-  #       uses: hashicorp/setup-terraform@v1
+    defaults:
+      run:
+        working-directory: ./terraform/create-update-infra
 
-  #     - name: Terraform Init
-  #       run: terraform init
+    steps:
+      # Instalando e configurando o Terraform
+      - name: Install and setting Terraform
+        uses: hashicorp/setup-terraform@v1
 
-  #     - name: Terraform Plan
-  #       run: terraform plan
+      - name: Terraform Init
+        run: terraform init
 
-  #     - name: Terraform Apply
-  #       run: terraform apply -auto-approve
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
  
   # deploy-cloud:    
-  #   needs: build-test
+  #   needs: create-update-infra
   #   runs-on: ubuntu-latest
+
+    # defaults:
+    #   run:
+    #     working-directory: ../terraform/deploy-cloud
 
   #   steps:
   #     # Instalanndo e configurando o Terraform
