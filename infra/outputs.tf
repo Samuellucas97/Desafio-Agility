@@ -1,15 +1,15 @@
 output "aks_id" {
-  value = azurerm_kubernetes_cluster.k8s.id
+  value = azurerm_kubernetes_cluster.aks.id
 }
 
 output "aks_fqdn" {
-  value = azurerm_kubernetes_cluster.k8s.fqdn
+  value = azurerm_kubernetes_cluster.aks.fqdn
 }
 
 output "aks_node_rg" {
-  value = azurerm_kubernetes_cluster.k8s.node_resource_group
+  value = azurerm_kubernetes_cluster.aks.node_resource_group
 }
 
 output "client_certificate" {
-  value = azurerm_kubernetes_cluster.k8s.kube_config.0.client_certificate
+  value = azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate
 }
