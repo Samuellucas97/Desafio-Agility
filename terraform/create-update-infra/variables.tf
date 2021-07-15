@@ -1,5 +1,5 @@
-variable resource_group {
-    default = "azure-k8s-desafio-agility"
+variable "resource_group" {
+  default = "azure-k8s-desafio-agility"
 }
 
 variable "location" {
@@ -8,13 +8,13 @@ variable "location" {
 }
 
 variable "agent_count" {
-    default = 2
+  default = 2
 }
 
 variable "dns_prefix" {
-    default = "k8-desafio-agility"
+  default = "k8-desafio-agility"
 }
 
-variable cluster_name {
-    default = "k8-desafio-agility"
+variable "cluster_name" {
+  default = "k8-desafio-agility"
 }

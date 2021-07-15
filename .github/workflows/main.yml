@@ -64,12 +64,16 @@ jobs:
 
     defaults:
       run:
-        working-directory: terraform/create-update-infra
+        working-directory: terraform/create-update-infra/
 
     steps:
       # Instalando e configurando o Terraform
       - name: Install and setting Terraform
         uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -recursive
 
       - name: Terraform Init
         run: terraform init

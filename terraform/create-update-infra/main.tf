@@ -1,19 +1,19 @@
-terraform {  
-  required_providers {    
-    azurerm = {      
-      source  = "hashicorp/azurerm"      
-      version = "~> 2.65"    
-    }  
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 2.65"
+    }
   }
-  
+
   required_version = ">= 0.14.9"
 }
 
-provider "azurerm" {  
+provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "k8s" {  
+resource "azurerm_resource_group" "k8s" {
   name     = var.resource_group
   location = var.location
 }
@@ -25,9 +25,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   dns_prefix          = var.dns_prefix
 
   default_node_pool {
-    name            = "agentpool"
-    node_count      = var.agent_count
-    vm_size         = "Standard_D2_v2"
+    name       = "agentpool"
+    node_count = var.agent_count
+    vm_size    = "Standard_D2_v2"
   }
 
   identity {
@@ -36,7 +36,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   network_profile {
     load_balancer_sku = "Standard"
-    network_plugin = "kubenet"
+    network_plugin    = "kubenet"
   }
 
   tags = {
