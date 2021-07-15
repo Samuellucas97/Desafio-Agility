@@ -66,13 +66,14 @@ jobs:
       run:
         working-directory: ${{ github.workspace }}/create-update-infra
 
+    env:
+      ARM_CLIENT_ID: ${{ secrets.TF_ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.TF_ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}
+
     steps:
       - uses: actions/checkout@v2
-      
-      - name: Log in with Azure
-        uses: azure/login@v1
-        with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
 
       # Instalando e configurando o Terraform
       - name: Install and setting Terraform
