@@ -11,69 +11,72 @@ on:
     
 jobs:
   build-test:
-    # Sistema operacional para qual será criada a build
-    runs-on: ubuntu-latest
-    
-    steps:
-      # Nesse passo é permitido que o workflow tenha acesso ao repositório contendo a aplicação
-      - name: Check out the repo
-        uses: actions/checkout@v2
-
-      # Configurando o Python
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.6
-
-      # - name: Running test's application (Not implemented)
-      #   run: pytest
+      # Sistema operacional para qual será criada a build
+      runs-on: ubuntu-latest
       
-      - name: Set up QEMU (processor emulator)
-        uses: docker/setup-qemu-action@v1
+      steps:
+        # Nesse passo é permitido que o workflow tenha acesso ao repositório contendo a aplicação
+        - name: Check out the repo
+          uses: actions/checkout@v2
 
-      - name: Docker Buildx
-        uses: docker/setup-buildx-action@v1  
+        # Configurando o Python
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.6
 
-      # Nesse passo estou logando na minha conta do Dockerhub
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      
-      # Entiquetando a versão 
-      - name: Bump version and push tag
-        id: tagging
-        uses: mathieudutour/github-tag-action@v4.5
-        with: 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        # - name: Running test's application (Not implemented)
+        #   run: pytest
+        
+        - name: Set up QEMU (processor emulator)
+          uses: docker/setup-qemu-action@v1
 
-      # Empacotando a build e subindo para o docker hub
-      - name: Build and Push to Docker Hub
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          context: .
-          file: ./app/Dockerfile
-          platforms: linux/amd64
-          tags: samuel1797/desafio-agility:${{ steps.tagging.outputs.new_version }}
+        - name: Docker Buildx
+          uses: docker/setup-buildx-action@v1  
 
+        # Nesse passo estou logando na minha conta do Dockerhub
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        
+        # Entiquetando a versão 
+        - name: Bump version and push tag
+          id: tagging
+          uses: mathieudutour/github-tag-action@v4.5
+          with: 
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+
+        # Empacotando a build e subindo para o docker hub
+        - name: Build and Push to Docker Hub
+          uses: docker/build-push-action@v2
+          with:
+            push: true
+            context: .
+            file: ./app/Dockerfile
+            platforms: linux/amd64
+            tags: samuel1797/desafio-agility:${{ steps.tagging.outputs.new_version }}
+            
   create-update-infra:
     needs: build-test
     runs-on: ubuntu-latest
 
-    # defaults:
-    #   run:
-    #     working-directory: terraform/create-update-infra/
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/create-update-infra
 
     steps:
+      - uses: actions/checkout@v2
+      
+      - name: Log in with Azure
+        uses: azure/login@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+
       # Instalando e configurando o Terraform
       - name: Install and setting Terraform
         uses: hashicorp/setup-terraform@v1
-
-      - name: Terraform fmt
-        id: fmt
-        run: terraform fmt -recursive
 
       - name: Terraform Init
         run: terraform init
@@ -84,25 +87,3 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
  
-  # deploy-cloud:    
-  #   needs: create-update-infra
-  #   runs-on: ubuntu-latest
-
-    # defaults:
-    #   run:
-    #     working-directory: ../terraform/deploy-cloud
-
-  #   steps:
-  #     # Instalanndo e configurando o Terraform
-  #     - name: Install and setting Terraform
-  #       uses: hashicorp/setup-terraform@v1
-
-  #     - name: Terraform Init
-  #       run: terraform init
-
-  #     - name: Terraform Plan
-  #       run: terraform plan
-
-  #     - name: Terraform Apply
-  #       run: terraform apply -auto-approve
-
