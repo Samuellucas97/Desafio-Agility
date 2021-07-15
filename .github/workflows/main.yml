@@ -62,9 +62,9 @@ jobs:
     needs: build-test
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: terraform/create-update-infra/
+    # defaults:
+    #   run:
+    #     working-directory: terraform/create-update-infra/
 
     steps:
       # Instalando e configurando o Terraform
