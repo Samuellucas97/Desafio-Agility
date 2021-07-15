@@ -58,13 +58,13 @@ jobs:
             platforms: linux/amd64
             tags: samuel1797/desafio-agility:${{ steps.tagging.outputs.new_version }}
             
-  create-update-infra:
+  provisioning-infra:
     needs: build-test
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: ${{ github.workspace }}/create-update-infra
+        working-directory: ${{ github.workspace }}/infra
 
     env:
       ARM_CLIENT_ID: ${{ secrets.TF_ARM_CLIENT_ID }}
