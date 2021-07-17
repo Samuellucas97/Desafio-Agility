@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pets-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pets-app
+  template:
+    metadata:
+      labels:
+        app: pets-app
+    spec:
+      containers:
+      - name: pets-app
+        image: samuel1797/desafio-agility:0.0.1-b2316fa
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pets-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: pets-app
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 8080

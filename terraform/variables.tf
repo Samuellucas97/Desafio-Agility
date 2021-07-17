@@ -1,5 +1,5 @@
 variable "resource_group" {
-  default = "k8s-desafio-agility"
+  default = "azure-k8s-desafio-agility"
 }
 
 variable "location" {

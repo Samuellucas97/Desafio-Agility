@@ -58,33 +58,66 @@ jobs:
             platforms: linux/amd64
             tags: samuel1797/desafio-agility:${{ steps.tagging.outputs.new_version }}
             
-  provisioning-infra:
-    needs: build-test
-    runs-on: ubuntu-latest
+  # infra:
+  #   needs: build-test
+  #   runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: ${{ github.workspace }}/infra
+  #   defaults:
+  #     run:
+  #       working-directory: ${{ github.workspace }}/terraform
 
-    env:
-      ARM_CLIENT_ID: ${{ secrets.TF_ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.TF_ARM_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}
+  #   env:
+  #     ARM_CLIENT_ID: ${{ secrets.TF_ARM_CLIENT_ID }}
+  #     ARM_CLIENT_SECRET: ${{ secrets.TF_ARM_CLIENT_SECRET }}
+  #     ARM_SUBSCRIPTION_ID: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
+  #     ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}
 
-    steps:
-      - uses: actions/checkout@v2
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      # Instalando e configurando o Terraform
-      - name: Install and setting Terraform
-        uses: hashicorp/setup-terraform@v1
+  #     # Instalando e configurando o Terraform
+  #     - name: Install and setting Terraform
+  #       uses: hashicorp/setup-terraform@v1
 
-      - name: Terraform Init
-        run: terraform init
+  #     - name: Terraform Init
+  #       run: terraform init
 
-      - name: Terraform Plan
-        run: terraform plan
+  #     - name: Terraform Plan
+  #       run: terraform plan
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
- 
+  #     - name: Terraform Apply
+  #       run: terraform apply -auto-approve
+  
+  # deploy-app:
+  #   needs: infra
+  #   runs-on: ubuntu-latest
+
+  #   defaults:
+  #     run:
+  #       working-directory: ${{ github.workspace }}/k8s
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+      
+  #     # Set the target Azure Kubernetes Service (AKS) cluster. 
+  #     - uses: azure/aks-set-context@v1
+  #       with:
+  #         creds: '${{ secrets.AZURE_CREDENTIALS }}'
+  #         cluster-name: ${{ env.CLUSTER_NAME }}
+  #         resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+      
+  #     # Create namespace if doesn't exist
+  #     - run: |
+  #         kubectl create namespace ${{ env.NAMESPACE }} --dry-run -o json | kubectl apply -f -
+      
+        
+  #     # Deploy app to AKS
+  #     - uses: azure/k8s-deploy@v1
+  #       with:
+  #           manifests: |
+  #             manifests/deployment.yml
+  #             manifests/service.yml
+  #           images: |
+  #             ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
+  #           namespace: ${{ env.NAMESPACE }}
+          
